@@ -9,7 +9,17 @@ const getAllTransactions = async () => {
   return Transaction.find();
 };
 
+const deleteTransaction = async (transactionId) => {
+  return Transaction.findByIdAndDelete(transactionId);
+};
+
+const getTransactionById = async (transactionId) => {
+  return Transaction.findById(transactionId);
+};
+
 module.exports = {
   createTransaction,
   getAllTransactions,
+  deleteTransaction,
+  getTransactionById,
 };
