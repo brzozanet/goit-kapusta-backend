@@ -22,6 +22,12 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    transactions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Transaction",
+      },
+    ],
   },
   {
     versionKey: false,

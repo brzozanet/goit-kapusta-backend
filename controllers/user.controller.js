@@ -41,17 +41,6 @@ const register = async (req, res, next) => {
   }
 };
 
-// const login = async (req, res, next) => {
-//   const { email, password } = req.body;
-//   const user = await userService.loginUser(email, password);
-
-//   if (!user || !user.validPassword(password)) {
-//     return res.status(403).json({
-//       status: "error",
-//       message: "Email doesn't exist / Password is wrong",
-//     });
-//   }
-
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   const user = await userService.loginUser(email, password);

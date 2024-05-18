@@ -2,36 +2,37 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
-const expenseSchema = new Schema({
-  description: {
-    type: String,
-    required: true,
-  },
-  amount: {
-    type: Number,
-    required: true,
-  },
-  date: {
-    type: Date,
-    required: true,
-  },
-  category: {
-    type: String,
-    required: true,
-  },
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  transactions: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Expense",
+const transactionSchema = new Schema(
+  {
+    date: {
+      day: String,
+      month: String,
+      year: String,
     },
-  ],
-});
+    description: {
+      type: String,
+      required: true,
+    },
+    categories: {
+      type: String,
+      required: true,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    income: {
+      type: Boolean,
+      required: true,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  { versionKey: false, timestamps: true }
+);
 
-const Expense = mongoose.model("expense", expenseSchema);
+const Transaction = mongoose.model("Transaction", transactionSchema);
 
-module.exports = Expense;
+module.exports = Transaction;

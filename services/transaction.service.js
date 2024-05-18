@@ -1,15 +1,15 @@
-const Expense = require("../models/transaction.model");
+const Transaction = require("../models/transaction.model");
 
-const createExpense = async (expenseData) => {
-  return Expense.create(expenseData);
+const createTransaction = async (transactionData) => {
+  const newTransaction = new Transaction(transactionData);
+  return newTransaction.save();
 };
 
-const getAllExpenses = async () => {
-  return Expense.find();
+const getAllTransactions = async () => {
+  return Transaction.find();
 };
-
 
 module.exports = {
-  createExpense,
-  getAllExpenses,
+  createTransaction,
+  getAllTransactions,
 };
