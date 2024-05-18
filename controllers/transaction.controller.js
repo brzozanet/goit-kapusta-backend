@@ -75,7 +75,36 @@ const addIncome = async (req, res, next) => {
   }
 };
 
+const deleteTransaction = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const transactionId = req.params.transactionId;
+
+    const transaction = await transactionService.getTransactionById(
+      transactionId
+    );
+    if (!transaction || transaction.owner.toString() !== userId) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Invalid transaction" });
+    }
+
+    const user = await userService.getUserById(userId);
+    const isIncome = transaction.income;
+    const amount = transaction.amount;
+    user.balance = isIncome ? user.balance - amount : user.balance + amount;
+    await user.save();
+
+    await transactionService.deleteTransaction(transactionId);
+
+    res.status(200).json({ newBalance: user.balance });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addExpense,
   addIncome,
+  deleteTransaction,
 };
