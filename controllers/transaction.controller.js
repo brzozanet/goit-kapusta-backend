@@ -1,9 +1,9 @@
-const expenseService = require("../services/transaction.service");
+const transactionService = require("../services/transaction.service");
 const userService = require("../services/user.service");
 
 const addExpense = async (req, res, next) => {
   try {
-    const { description, amount, date, category } = req.body;
+    const { description, amount, date } = req.body;
     const userId = req.user.id;
 
     const user = await userService.getUserById(userId);
@@ -14,29 +14,68 @@ const addExpense = async (req, res, next) => {
       });
     }
 
-    const newExpense = await expenseService.createExpense({
+    const { day, month, year } = date;
+    const categories = "Wydatek";
+
+    const newTransaction = await transactionService.createTransaction({
+      date: { day, month, year },
       description,
+      categories,
       amount,
-      date,
-      category,
-      userId,
+      income: false,
+      owner: userId,
     });
 
-    if (!user.transactions) {
-      user.transactions = [];
-    }
-
     user.balance -= amount;
-    user.transactions.push(newExpense._id);
     await user.save();
 
     res.status(200).json({
       newBalance: user.balance,
-      transaction: newExpense,
+      transaction: newTransaction,
     });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { addExpense };
+const addIncome = async (req, res, next) => {
+  try {
+    const { description, amount, date } = req.body;
+    const userId = req.user.id;
+
+    const user = await userService.getUserById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "Invalid user",
+      });
+    }
+
+    const { day, month, year } = date;
+    const categories = "Wydatek 2";
+
+    const newTransaction = await transactionService.createTransaction({
+      date: { day, month, year },
+      description,
+      categories,
+      amount,
+      income: true,
+      owner: userId,
+    });
+
+    user.balance += amount;
+    await user.save();
+
+    res.status(200).json({
+      newBalance: user.balance,
+      transaction: newTransaction,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  addExpense,
+  addIncome,
+};
