@@ -24,10 +24,12 @@ const logoutUser = async (email) => {
   }
 };
 
+
 module.exports = {
   createUser,
   getUserByEmail,
   loginUser,
   logoutUser,
   getUserById,
+  
 };

@@ -1,5 +1,7 @@
 const transactionService = require("../services/transaction.service");
 const userService = require("../services/user.service");
+const { getMonthlyExpenseStats } = require("../helpers/monthsExpense");
+const { getMonthlyIncomeStats } = require("../helpers/monthsIncome");
 
 const addExpense = async (req, res, next) => {
   try {
@@ -103,8 +105,44 @@ const deleteTransaction = async (req, res, next) => {
   }
 };
 
+const getExpenseStats = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const currentYear = new Date().getFullYear();
+
+    const expenses = await transactionService.getExpensesByUserAndYear(
+      userId,
+      currentYear
+    );
+    const monthStats = getMonthlyExpenseStats(expenses, currentYear);
+
+    res.status(200).json({ expenses, monthStats });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getIncomeStats = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const currentYear = new Date().getFullYear();
+
+    const incomes = await transactionService.getIncomesByUserAndYear(
+      userId,
+      currentYear
+    );
+    const monthStats = getMonthlyIncomeStats(incomes, currentYear);
+
+    res.status(200).json({ incomes, monthStats });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addExpense,
   addIncome,
   deleteTransaction,
+  getExpenseStats,
+  getIncomeStats,
 };
